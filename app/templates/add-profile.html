@@ -1,0 +1,47 @@
+ {%extends 'base.html'%}
+
+
+{% block main %}
+    
+<form method = "POST" enctype = "mutlipart/form-data" action = "{{url_for('add-profile')}}">   
+    
+    <h3>Create your user Profile</h3><br>
+    
+
+    First Name: (Required*)<br>
+    <!--Pleae enter your first name<br>-->
+    <input type = "text" name = "fname"><br><br>
+    
+    Last Name: (Required*)<br>
+    <!--Pleae enter your last name<br>-->
+    <input type = "text" name = "lname"><br><br>
+    
+    Create a password<br>
+    <input type="password" id="password" name="password" placeholder="Password" required ><br><br>
+    
+    Select your gender below<br><br>
+    
+    <select>
+  <option value="male">Male</option>
+  <option value="female">Female</option>
+    </select><br><br>
+    
+    Age: (Required*)<br>
+    <!--Pleae enter your age<br>-->
+    <input type = "text" age = "age"><br><br>
+    
+    Bio: (Required*)<br>
+    Add a short Bio<br>
+    <textarea cols="20" rows="3"></textarea><br><br>
+    <!--<input type = "text" bio = "bio"><br><br>-->
+    
+    Upload a Profile Picture:<br>
+    <input type="file" name="image" accept="image/gif, image/jpeg, image/png"><br><br>
+
+    
+
+    <input type = submit value = "Submit">
+    
+    
+    </form>
+    {% endblock %}

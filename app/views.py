@@ -4,9 +4,21 @@ Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
 Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
+import os
+from app import app, db, login_manager
+from flask import render_template, request, redirect, url_for, flash, session, abort
+from werkzeug.utils import secure_filename
+from flask_login import login_user
+from flask_wtf import Form
+from forms import ProfileForm
+from models import Profile
 
-from app import app
-from flask import render_template, request, redirect, url_for
+
+# from flask.ext.wtf import Form
+# from wtforms.fields import TextField, BooleanField
+# from wtforms.validators import Required
+
+
 
 
 ###
@@ -23,8 +35,41 @@ def home():
 def about():
     """Render the website's about page."""
     return render_template('about.html', name="Mary Jane")
+    
+@app.route('/profiles')
+def profiles():
+    profiles = db.session.query(Profile).all()
+    return render_template('profiles.html', profiles=profiles)
 
+@app.route('/add-profile', methods=['POST', 'GET'])
+def add_profile():
+    profile_form = ProfileForm()
+    
+    if request.method == 'POST':
+        if profile_form.validate_on_submit():
+        
+        
+            firstname = profile_form.firstname.data
+            lastname = profile_form.lastname.data
+            password = profile_form.password.data
+            
+            profile =  profile(firstname, lastname, password)
+            
+            db.session.add(profile)
+            db.session.commit()
+            
+            flash ('Profile created')
+            return redirect(url_for('profiles'))
+            
+            
+    # flash_errors(profile_form)
+    return render_template("add-profile.html", form=profile_form)
 
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    flash('You were logged out')
+    return redirect(url_for('home'))
 ###
 # The functions below should be applicable to all Flask apps.
 ###
