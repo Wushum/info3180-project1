@@ -4,6 +4,11 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 
 
+USERNAME = 'admin'
+PASSWORD = 'password123'
+
+UPLOAD_FOLDER = './app/static/uploads'
+
 
 app = Flask(__name__)
 

@@ -41,7 +41,7 @@ def profiles():
     profiles = db.session.query(Profile).all()
     return render_template('profiles.html', profiles=profiles)
 
-@app.route('/add-profile', methods=['POST', 'GET'])
+@app.route('/add_profile', methods=['POST', 'GET'])
 def add_profile():
     profile_form = ProfileForm()
     
@@ -53,17 +53,17 @@ def add_profile():
             lastname = profile_form.lastname.data
             password = profile_form.password.data
             
-            profile =  profile(firstname, lastname, password)
+            profile =  Profile(firstname, lastname, password)
             
             db.session.add(profile)
             db.session.commit()
             
-            flash ('Profile created')
-            return redirect(url_for('profiles'))
+            flash ('Profile created', 'success')
+            return redirect(url_for('home'))
             
             
     # flash_errors(profile_form)
-    return render_template("add-profile.html", form=profile_form)
+    return render_template("add_profile.html", form=profile_form)
 
 @app.route('/logout')
 def logout():
