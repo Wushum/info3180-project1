@@ -36,13 +36,51 @@ def about():
     """Render the website's about page."""
     return render_template('about.html', name="Mary Jane")
     
+    
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    error = None
+    if request.method == 'POST':
+        if request.form['username'] != app.config['USERNAME'] or request.form['password'] != app.config['PASSWORD']:
+            error = 'Invalid username or password'
+        else:
+            session['logged_in'] = True
+            
+            flash('You were logged in')
+            return redirect(url_for('add_profile'))
+    return render_template('login.html', error=error)
+    
 @app.route('/profiles')
 def profiles():
-    profiles = db.session.query(Profile).all()
-    return render_template('profiles.html', profiles=profiles)
-
+    if not session.get('logged_in'):
+        abort(401)
+        
+        
+    import os
+    rootdir = os.getcwd()
+    filelist = []
+    
+    for subdir, dirs, files in os.walk(rootdir + '/app/static/uploads'):
+        for file in files:
+            f = os.path.join(subdir, file)
+            filelist += [f]
+            
+            #names = os.listdir(os.path.join(app.static_folder, 'imgs'))
+            #img_url =  url_for('static/uploads', filesname = os.path.join('imgs' (names))
+        return render_template('profiles.html', filelist=filelist)
+        
+    
 @app.route('/add_profile', methods=['POST', 'GET'])
 def add_profile():
+    if not session.get('logged_in'):
+        abort(401)
+        
+    file_folder = app.config["UPLOAD_FOLDER"]
+    if request.method == 'POST':
+        file = request.files['file']
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(file_folder, filename))
+    
     profile_form = ProfileForm()
     
     if request.method == 'POST':
