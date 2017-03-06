@@ -4,7 +4,7 @@ Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
 Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
-import os
+import os, time
 from app import app, db, login_manager
 from flask import render_template, request, redirect, url_for, flash, session, abort
 from werkzeug.utils import secure_filename
@@ -36,6 +36,8 @@ def about():
     """Render the website's about page."""
     return render_template('about.html', name="Mary Jane")
     
+def date():
+    return time.strftime("%m %d %Y")
     
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -52,22 +54,24 @@ def login():
     
 @app.route('/profiles')
 def profiles():
-    if not session.get('logged_in'):
-        abort(401)
+    users= db.session.query(Profile).all()
+    return render_template('profiles.html',users=users)
+    # if not session.get('logged_in'):
+    #     abort(401)
         
         
-    import os
-    rootdir = os.getcwd()
-    filelist = []
+    # import os
+    # rootdir = os.getcwd()
+    # filelist = []
     
-    for subdir, dirs, files in os.walk(rootdir + '/app/static/uploads'):
-        for file in files:
-            f = os.path.join(subdir, file)
-            filelist += [f]
+    # for subdir, dirs, files in os.walk(rootdir + '/app/static/uploads'):
+    #     for file in files:
+    #         f = os.path.join(subdir, file)
+    #         filelist += [f]
             
-            #names = os.listdir(os.path.join(app.static_folder, 'imgs'))
-            #img_url =  url_for('static/uploads', filesname = os.path.join('imgs' (names))
-        return render_template('profiles.html', filelist=filelist)
+    #         #names = os.listdir(os.path.join(app.static_folder, 'imgs'))
+    #         #img_url =  url_for('static/uploads', filesname = os.path.join('imgs' (names))
+    #     return render_template('profiles.html', filelist=filelist)
         
     
 @app.route('/add_profile', methods=['POST', 'GET'])
@@ -89,9 +93,14 @@ def add_profile():
         
             firstname = profile_form.firstname.data
             lastname = profile_form.lastname.data
-            password = profile_form.password.data
+            username = profile_form.username.data
+            #password = profile_form.password.data
+            gender = profile_form.gender.data
+            age = profile_form.age.data
+            bio = profile_form.bio.data
+            #date_created = profile_form.date_created.data
             
-            profile =  Profile(firstname, lastname, password)
+            profile =  Profile(firstname, lastname, username, gender, age, bio, date())
             
             db.session.add(profile)
             db.session.commit()
