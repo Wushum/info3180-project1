@@ -19,7 +19,7 @@ from models import Profile
 # from wtforms.validators import Required
 
 
-
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 ###
 # Routing for your application.
@@ -49,41 +49,50 @@ def login():
             session['logged_in'] = True
             
             flash('You were logged in')
-            return redirect(url_for('add_profile'))
+            return redirect(url_for('profile'))
     return render_template('login.html', error=error)
     
 @app.route('/profiles')
 def profiles():
-    users= db.session.query(Profile).all()
-    return render_template('profiles.html',users=users)
-    # if not session.get('logged_in'):
-    #     abort(401)
+    #users= db.session.query(Profile).all()
+    #return render_template('profiles.html',users=users)
+    if not session.get('logged_in'):
+        abort(401)
         
         
-    # import os
-    # rootdir = os.getcwd()
-    # filelist = []
+    import os
+    rootdir = os.getcwd()
+    profilelist = []
     
-    # for subdir, dirs, files in os.walk(rootdir + '/app/static/uploads'):
-    #     for file in files:
-    #         f = os.path.join(subdir, file)
-    #         filelist += [f]
+    for subdir, dirs, files in os.walk(rootdir + '/app/static/uploads'):
+        for file in files:
+            f = os.path.join(subdir, file)
+            profilelist += [f]
             
-    #         #names = os.listdir(os.path.join(app.static_folder, 'imgs'))
-    #         #img_url =  url_for('static/uploads', filesname = os.path.join('imgs' (names))
-    #     return render_template('profiles.html', filelist=filelist)
+            #names = os.listdir(os.path.join(app.static_folder, 'imgs'))
+            #img_url =  url_for('static/uploads', filesname = os.path.join('imgs' (names))
+        return render_template('profiles.html', profilelist=profilelist)
         
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
     
-@app.route('/add_profile', methods=['POST', 'GET'])
-def add_profile():
+@app.route('/profile', methods=['POST', 'GET'])
+def profile():
     if not session.get('logged_in'):
         abort(401)
         
     file_folder = app.config["UPLOAD_FOLDER"]
     if request.method == 'POST':
-        file = request.files['file']
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(file_folder, filename))
+        pic = request.files['pic']
+        if pic and allowed_file (pic.filename):
+            #picname = secure_filename
+            filename = secure_filename(pic.filename)
+            # path ="/static/uploads" + picname
+            # pic.save(".app"+path)
+            #pic.save(os.path.join(['UPLOAD_FOLDER'], pic.filename))
+            pic.save(os.path.join(file_folder, filename))
+            #pic.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     
     profile_form = ProfileForm()
     
@@ -98,6 +107,7 @@ def add_profile():
             gender = profile_form.gender.data
             age = profile_form.age.data
             bio = profile_form.bio.data
+            pic = request.files['pic']
             #date_created = profile_form.date_created.data
             
             profile =  Profile(firstname, lastname, username, gender, age, bio, date())
@@ -110,7 +120,7 @@ def add_profile():
             
             
     # flash_errors(profile_form)
-    return render_template("add_profile.html", form=profile_form)
+    return render_template("profile.html", form=profile_form)
 
 @app.route('/logout')
 def logout():
