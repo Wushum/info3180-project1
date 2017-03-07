@@ -9,11 +9,12 @@ class Profile(db.Model):
     gender = db.Column(db.String(10))
     age = db.Column(db.Integer)
     bio = db.Column(db.String(50))
-    username = db.Column(db.String(25))
+    username = db.Column(db.String(25), primary_key = True)
+    pic = db.Column(db.String(100))
     date_created = db.Column(db.Date)
     
 
-    def __init__(self, firstname, lastname, username, gender, age, bio, date_created):
+    def __init__(self, firstname, lastname, username, gender, age, bio, pic, date_created):
         #password
         self.firstname = firstname
         self.lastname = lastname
@@ -21,6 +22,7 @@ class Profile(db.Model):
         self.gender = gender
         self.age = age
         self.bio = bio
+        self.pic=pic
         self.date_created = date_created
 
     def is_authenticated(self):

@@ -76,6 +76,11 @@ def profiles():
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/profile/<userid>',methods=["GET"])
+def profileview(userid):
+    users= db.session.query(Profile).filter_by(username=userid)
+    return render_template('profileview.html',users=users)
     
 @app.route('/profile', methods=['POST', 'GET'])
 def profile():
@@ -110,7 +115,7 @@ def profile():
             pic = request.files['pic']
             #date_created = profile_form.date_created.data
             
-            profile =  Profile(firstname, lastname, username, gender, age, bio, date())
+            profile =  Profile(firstname, lastname, username, gender, age, bio, date,())
             
             db.session.add(profile)
             db.session.commit()
