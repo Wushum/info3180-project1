@@ -80,7 +80,7 @@ def allowed_file(filename):
 @app.route('/profile/<userid>',methods=["GET"])
 def profileview(userid):
     users= db.session.query(Profile).filter_by(username=userid)
-    return render_template('profileview.html',users=users)
+    return render_template('profileview.html', users=users)
     
 @app.route('/profile', methods=['POST', 'GET'])
 def profile():

@@ -8,5 +8,9 @@ class ProfileForm(FlaskForm):
     #password = PasswordField('password', validators=[InputRequired()])
     username = StringField('username', validators=[InputRequired()])
     #gender = StringField('gender', validators=[InputRequired()])
-    age = StringField('age', validators=[InputRequired()])
-    bio = StringField('bio', validators=[InputRequired()])
+    gender = SelectField('Gender', choices = [('male', 'Male'), ('female', 'Female')])
+    age = IntegerField('age', validators=[InputRequired()])
+    bio = TextAreaField('bio', validators=[InputRequired()])
+    pic = FileField('pic', validators=[InputRequired()])
+
+
