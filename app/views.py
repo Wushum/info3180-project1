@@ -6,9 +6,9 @@ This file creates your application.
 """
 import os, time
 from app import app, db, login_manager
-from flask import render_template, request, redirect, url_for, flash, session, abort
+from flask import render_template, request, redirect, url_for, flash, session, abort, jsonify
 from werkzeug.utils import secure_filename
-from flask_login import login_user
+from flask_login import login_user, login_required
 from flask_wtf import Form
 from forms import ProfileForm
 from models import Profile
@@ -79,14 +79,14 @@ def allowed_file(filename):
 
 @app.route('/profile/<userid>',methods=["GET"])
 def profileview(userid):
-    users= db.session.query(Profile).filter_by(username=userid)
-    return render_template('profileview.html', users=users)
+    #users= db.session.query(Profile).filter_by(username=userid)
+    profile = profile.query.get(userid)
+    return render_template('profileview.html', profile=profile)
     
 @app.route('/profile', methods=['POST', 'GET'])
 def profile():
     if not session.get('logged_in'):
         abort(401)
-        
     file_folder = app.config["UPLOAD_FOLDER"]
     if request.method == 'POST':
         pic = request.files['pic']
@@ -98,12 +98,9 @@ def profile():
             #pic.save(os.path.join(['UPLOAD_FOLDER'], pic.filename))
             pic.save(os.path.join(file_folder, filename))
             #pic.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    
     profile_form = ProfileForm()
-    
     if request.method == 'POST':
         if profile_form.validate_on_submit():
-        
         
             firstname = profile_form.firstname.data
             lastname = profile_form.lastname.data
@@ -122,12 +119,19 @@ def profile():
             
             flash ('Profile created', 'success')
             return redirect(url_for('home'))
-            
-            
     # flash_errors(profile_form)
     return render_template("profile.html", form=profile_form)
 
+# @app.route('/profiles', methods=['POST'])
+# def get_user():
+#     return jsonify(username=username, firstname=firstname, lastname=lastnameemail, gender=gender, age=age, bio=bio, pic=pic)
+
+@app.route('/profile/<userid>', methods = ['POST'])
+def get_current_user(userid):
+    return jsonify(username=username, gender=gender, age=age, pic=pic, date_created=date())
+
 @app.route('/logout')
+@login_required
 def logout():
     session.pop('logged_in', None)
     flash('You were logged out')
