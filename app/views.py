@@ -12,6 +12,9 @@ from flask_login import login_user, login_required
 from flask_wtf import Form
 from forms import ProfileForm
 from models import Profile
+from datetime import datetime
+from random import randint
+from sqlalchemy.sql import exists
 
 
 # from flask.ext.wtf import Form
@@ -39,103 +42,61 @@ def about():
 def date():
     return time.strftime("%m %d %Y")
     
-@app.route('/login', methods=['POST', 'GET'])
-def login():
-    error = None
-    if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME'] or request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid username or password'
-        else:
-            session['logged_in'] = True
-            
-            flash('You were logged in')
-            return redirect(url_for('profile'))
-    return render_template('login.html', error=error)
-    
-@app.route('/profiles')
-def profiles():
-    #users= db.session.query(Profile).all()
-    #return render_template('profiles.html',users=users)
-    if not session.get('logged_in'):
-        abort(401)
-        
-        
-    import os
-    rootdir = os.getcwd()
-    profilelist = []
-    
-    for subdir, dirs, files in os.walk(rootdir + '/app/static/uploads'):
-        for file in files:
-            f = os.path.join(subdir, file)
-            profilelist += [f]
-            
-            #names = os.listdir(os.path.join(app.static_folder, 'imgs'))
-            #img_url =  url_for('static/uploads', filesname = os.path.join('imgs' (names))
-        return render_template('profiles.html', profilelist=profilelist)
-        
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/profile/<userid>',methods=["GET"])
+@app.route('/profile/<int:userid>', methods=['POST', 'GET'])
 def profileview(userid):
-    #users= db.session.query(Profile).filter_by(username=userid)
-    profile = profile.query.get(userid)
-    return render_template('profileview.html', profile=profile)
+    user = db.session.query(Profile).filter(Profile.userid == str(userid)).first()
+    if not user:
+        flash("user cannot be found", 'danger')
+    else:
+        if request.header.get('content-type' == 'application/json') or request.method == 'POST':
+            return jsonify(userid=user.userid, username=user.username, gender=user.gender, age=user.age, pic=user.pic, date_created=user.date_created)
+        return render_template('profile.html', user=user)
+    return redirect(url_for('profileview'))
+
     
 @app.route('/profile', methods=['POST', 'GET'])
 def profile():
-    if not session.get('logged_in'):
-        abort(401)
-    file_folder = app.config["UPLOAD_FOLDER"]
-    if request.method == 'POST':
-        pic = request.files['pic']
-        if pic and allowed_file (pic.filename):
-            #picname = secure_filename
-            filename = secure_filename(pic.filename)
-            # path ="/static/uploads" + picname
-            # pic.save(".app"+path)
-            #pic.save(os.path.join(['UPLOAD_FOLDER'], pic.filename))
-            pic.save(os.path.join(file_folder, filename))
-            #pic.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     profile_form = ProfileForm()
     if request.method == 'POST':
         if profile_form.validate_on_submit():
-        
-            firstname = profile_form.firstname.data
-            lastname = profile_form.lastname.data
-            username = profile_form.username.data
-            #password = profile_form.password.data
-            gender = profile_form.gender.data
-            age = profile_form.age.data
-            bio = profile_form.bio.data
+            firstname = request.form['firstname']
+            lastname = request.form['lastname']
+            username = request.form['username']
+            gender = request.form['gender']
+            age = request.form['age']
+            #bio = request.form['bio']
             pic = request.files['pic']
-            #date_created = profile_form.date_created.data
             
-            profile =  Profile(firstname, lastname, username, gender, age, bio, date,())
+            while True:
+                userid = randint(10000, 20000)
+                if not db.session.query(exists().where(Profile.userid ==str (userid))).scalar():
+                    break
+            filename = "{}{}".format(userid,secure_filename(pic.filename))
+            filepath = "app/static/uploads/{}".format(filename)
+            pic.save(filepath)
+            
+            profile =  Profile(str(userid),firstname, lastname, username, filename, gender, age, datetime.now())
             
             db.session.add(profile)
             db.session.commit()
             
             flash ('Profile created', 'success')
-            return redirect(url_for('home'))
+            return redirect(url_for('profileview'))
     # flash_errors(profile_form)
     return render_template("profile.html", form=profile_form)
 
-# @app.route('/profiles', methods=['POST'])
-# def get_user():
-#     return jsonify(username=username, firstname=firstname, lastname=lastnameemail, gender=gender, age=age, bio=bio, pic=pic)
+@app.route('/profiles', methods=['POST', 'GET'])
+def profile_list():
+    
+    plist = []
+    result = db.session.query(Profile).all()
+    for user in result:
+        plist.append({"username": user.username, "userid": user.userid})
+    if request.headers.get('content-type') == 'application/json' or request.method == 'POST':
+        return jsonify(users = plist)
+    return render_template('profiles.html', plist=plist)
 
-@app.route('/profile/<userid>', methods = ['POST'])
-def get_current_user(userid):
-    return jsonify(username=username, gender=gender, age=age, pic=pic, date_created=date())
-
-@app.route('/logout')
-@login_required
-def logout():
-    session.pop('logged_in', None)
-    flash('You were logged out')
-    return redirect(url_for('home'))
 ###
 # The functions below should be applicable to all Flask apps.
 ###

@@ -1,26 +1,26 @@
 from app import db
 
 class Profile(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
+    userid = db.Column(db.Integer, primary_key = True)
     firstname = db.Column(db.String(255))
     lastname = db.Column(db.String(255))
-    username = db.Column(db.String(25), primary_key = True)
-    #password = db.Column(db.String(255), unique=True)
+    username = db.Column(db.String(25), unique=True)
     gender = db.Column(db.String(10))
     age = db.Column(db.Integer)
-    bio = db.Column(db.String(50))
+    #bio = db.Column(db.String(50))
     pic = db.Column(db.String(100))
-    date_created = db.Column(db.Date)
+    date_created = db.Column(db.DateTime, nullable =False)
     
 
-    def __init__(self, firstname, lastname, username, gender, age, bio, pic, date_created):
+    def __init__(self, userid, firstname, lastname, username, gender, age, pic, date_created):
         #password
+        self.userid = userid
         self.firstname = firstname
         self.lastname = lastname
         self.username = username
         self.gender = gender
         self.age = age
-        self.bio = bio
+        #self.bio = bio
         self.pic=pic
         self.date_created = date_created
 
