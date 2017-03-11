@@ -4,9 +4,9 @@ Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
 Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
-import os, time
+import os, time, random, datetime
 from app import app, db, login_manager
-from flask import render_template, request, redirect, url_for, flash, session, abort, jsonify
+from flask import render_template, request, redirect, url_for, flash, session, abort, jsonify, make_response
 from werkzeug.utils import secure_filename
 from flask_login import login_user, login_required
 from flask_wtf import Form
@@ -39,61 +39,66 @@ def about():
     """Render the website's about page."""
     return render_template('about.html', name="Mary Jane")
     
-def date():
-    return time.strftime("%m %d %Y")
-    
+def timeinfo():
+    return time.strftime("%d %b %Y")
 
-@app.route('/profile/<int:userid>', methods=['POST', 'GET'])
-def profileview(userid):
+
+@app.route('/profile/<userid>', methods=['GET', 'POST'])
+def profile_view(userid):
     user = db.session.query(Profile).filter(Profile.userid == str(userid)).first()
     if not user:
         flash("user cannot be found", 'danger')
     else:
-        if request.header.get('content-type' == 'application/json') or request.method == 'POST':
+        if request.header.get('Content-Type' == 'application/json') or request.method == 'POST':
             return jsonify(userid=user.userid, username=user.username, gender=user.gender, age=user.age, pic=user.pic, date_created=user.date_created)
         return render_template('profile.html', user=user)
-    return redirect(url_for('profileview'))
-
+    return redirect(url_for('profile_list'))
     
-@app.route('/profile', methods=['POST', 'GET'])
-def profile():
-    profile_form = ProfileForm()
+@app.route('/profile', methods=['GET', 'POST'])
+def add_profile():
+    form = ProfileForm(request.form)
+    #file_folder = app.config['UPLOAD_FOLDER']
     if request.method == 'POST':
-        if profile_form.validate_on_submit():
-            firstname = request.form['firstname']
-            lastname = request.form['lastname']
-            username = request.form['username']
+        if form.validate_on_submit():
+            firstname = request.form['firstname']#.strip()
+            lastname = request.form['lastname']#.strip()
+            username = request.form['username']#.strip()
             gender = request.form['gender']
             age = request.form['age']
-            #bio = request.form['bio']
+            bio = request.form['bio']
             pic = request.files['pic']
-            
+            file_folder = app.config["UPLOAD_FOLDER"]
+            #date_created  = time.strftime("%m %d %Y")
+            if pic.filename =='':
+                picName = "profile-default.jpg"
+            else:
+                picName = secure_filename(pic.filename)
+                pic.save(os.path.join(file_folder, picName))
             while True:
                 userid = randint(10000, 20000)
-                if not db.session.query(exists().where(Profile.userid ==str (userid))).scalar():
+                output = Profile.query.filter_by(userid=userid).first()
+                if output is None:
+                    
+                #if not db.session.query(exists().where(Profile.userid ==str (userid))).scalar():
                     break
-            filename = "{}{}".format(userid,secure_filename(pic.filename))
-            filepath = "app/static/uploads/{}".format(filename)
-            pic.save(filepath)
-            
-            profile =  Profile(str(userid),firstname, lastname, username, filename, gender, age, datetime.now())
+            date_created = timeinfo()
+            profile =  Profile(str(userid),firstname, lastname, username, gender, bio, age, date_created)
             
             db.session.add(profile)
             db.session.commit()
             
             flash ('Profile created', 'success')
-            return redirect(url_for('profileview'))
+            return redirect(url_for('profile_list'))
     # flash_errors(profile_form)
-    return render_template("profile.html", form=profile_form)
+    return render_template("profile.html", form=form)
 
-@app.route('/profiles', methods=['POST', 'GET'])
+@app.route('/profiles', methods=['GET', 'POST'])
 def profile_list():
-    
     plist = []
     result = db.session.query(Profile).all()
     for user in result:
         plist.append({"username": user.username, "userid": user.userid})
-    if request.headers.get('content-type') == 'application/json' or request.method == 'POST':
+    if request.headers.get('Content-Type') == 'application/json' or request.method == 'POST':
         return jsonify(users = plist)
     return render_template('profiles.html', plist=plist)
 

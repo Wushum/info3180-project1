@@ -1,24 +1,27 @@
 {% extends 'base.html' %}
 
-{% block main %}
-<div class="container">
-  <h1 class="page-header">All user profiles</h1>
-  {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <div class="alert alert-success">
-        <ul>
-        {% for message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
-      </div>
-    {% endif %}
-  {% endwith %}
+{% block title %} All Users {% endblock %}
 
-  <ul>
-    {% for profile in profiles %}
-    <li>{{ profile.name }}</li>
-    {% endfor %}
-  </ul>
-</div>
+
+{% block main %}
+{% for user in users %}
+
+<img src="{{ url_for('static', filename='uploads/'+user.pic) }}"></img>
+
+            <h4>{{ user.firstname}} {{ user.lastname }}</h4><br/><br/>
+            Profile Created On: {{ user.profile_created_on }}<br/><br/>
+            
+            <p>Username: {{ user.username }} <br/><br/>
+            User ID: {{ user.userid }} <br/><br/>
+            Gender: {{ user.gender }} <br/><br/>
+            Age: {{ user.age }} <br/><br/>
+            
+            {{ user.bio }}
+            </p>
+        </div>
+    </div>
+    
+    <br/>
+{% endfor %}
 {% endblock %}
+

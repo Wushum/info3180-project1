@@ -1,8 +1,12 @@
 {% extends 'base.html'%}
+{% block title %} View user {% endblock %}
 {% block main%}
     {% for user in users %}
+    
+    <img src = "{{url_for('static', filename = 'uploads/' +user.pic }}"></img>
+    
     <h4>{{ user.firstname }}'s Profile</h4>
-    <img src="{{user.pic}}"></img>
+    <!--<img src="{{user.pic}}"></img>-->
     <h3>{{ user.firstname }} {{user.lastname}}</h3> 
     <h6>Date Created: {{user.date_created}}</h6>
     <p>Username: {{user.username}}<br>

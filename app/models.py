@@ -2,13 +2,13 @@ from app import db
 
 class Profile(db.Model):
     userid = db.Column(db.Integer, primary_key = True)
-    firstname = db.Column(db.String(255))
-    lastname = db.Column(db.String(255))
+    firstname = db.Column(db.String(255), nullable =False)
+    lastname = db.Column(db.String(255), nullable =False)
     username = db.Column(db.String(25), unique=True)
-    gender = db.Column(db.String(10))
-    age = db.Column(db.Integer)
+    gender = db.Column(db.String(10), nullable =False)
+    age = db.Column(db.Integer, nullable =False)
     #bio = db.Column(db.String(50))
-    pic = db.Column(db.String(100))
+    pic = db.Column(db.String(100), nullable =False)
     date_created = db.Column(db.DateTime, nullable =False)
     
 
