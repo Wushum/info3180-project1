@@ -4,24 +4,34 @@
 
 
 {% block main %}
-{% for user in users %}
-
-<img src="{{ url_for('static', filename='uploads/'+user.pic) }}"></img>
-
-            <h4>{{ user.firstname}} {{ user.lastname }}</h4><br/><br/>
-            Profile Created On: {{ user.profile_created_on }}<br/><br/>
+<div>
+<form action="{{ url_for('profile_list') }}" method="POST" enctype="application/json">
             
-            <p>Username: {{ user.username }} <br/><br/>
-            User ID: {{ user.userid }} <br/><br/>
-            Gender: {{ user.gender }} <br/><br/>
-            Age: {{ user.age }} <br/><br/>
+        </form>
+</div>
+
+
+{% for profile in profiles %}
+<div>
+<a href="/profile/{{ profile.userid}}" method="POST">
+
+<img src="{{ url_for('static', filename='uploads/'+profile.pic) }}">
+
+            <h4>{{profile.firstname}} {{ profile.lastname }}</h4><br/><br/>
+            Profile Created On: {{ profile.date_created }}<br/><br/>
             
-            {{ user.bio }}
+            <p>Username: {{ profile.username }} <br/><br/>
+            User ID: {{ profile.userid }} <br/><br/>
+            Gender: {{ profile.gender }} <br/><br/>
+            Age: {{ profile.age }} <br/><br/>
+            
+            {{ profile.bio }}
             </p>
         </div>
-    </div>
+    
     
     <br/>
+    
 {% endfor %}
 {% endblock %}
 

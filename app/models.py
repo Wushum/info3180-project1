@@ -7,12 +7,12 @@ class Profile(db.Model):
     username = db.Column(db.String(25), unique=True)
     gender = db.Column(db.String(10), nullable =False)
     age = db.Column(db.Integer, nullable =False)
-    #bio = db.Column(db.String(50))
+    bio = db.Column(db.String(50))
     pic = db.Column(db.String(100), nullable =False)
-    date_created = db.Column(db.DateTime, nullable =False)
+    date_created = db.Column(db.Date())
     
 
-    def __init__(self, userid, firstname, lastname, username, gender, age, pic, date_created):
+    def __init__(self, userid, firstname, lastname, username, gender, age, bio, pic, date_created):
         #password
         self.userid = userid
         self.firstname = firstname
@@ -20,7 +20,7 @@ class Profile(db.Model):
         self.username = username
         self.gender = gender
         self.age = age
-        #self.bio = bio
+        self.bio = bio
         self.pic=pic
         self.date_created = date_created
 

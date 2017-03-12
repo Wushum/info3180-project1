@@ -1,24 +1,46 @@
-{% extends "base.html" %}
+{%extends "base.html"%}
 
+ {%block main%}   
+ 
+{%include 'flash.html'%}
+ 
+<form action="{{ url_for('add_profile') }}" method="post"  enctype="multipart/form-data">   
 
-
-{% block main %}
-
-<form method = "POST" enctype = "mutlipart/form-data" action = "{{url_for('profile_list')}}">   
-   
-    {{ form.csrf }}
-   
-    {{ form.firstname.label }} <br/> {{ form.firstname }} <br /><br/>
-    {{ form.lastname.label }} <br/> {{ form.lastname }} <br /><br/>
-    {{ form.username.label }} <br/> {{ form.username }} <br /><br/>
-    {{ form.age.label }} <br/> {{ form.age }} <br /><br/>
-    {{ form.gender.label }} <br/> {{ form.gender }} 
-    {{ form.bio.label }} <br/> {{ form.bio }} <br /> <br/>
+    <h3>Add your profile</h3><br>
     
-    <label for="image">Upload a Image for your profile </label><br/><br/>
-    <input type="file" name="image" accept="image/gif, image/jpeg, image/png"><br>
+    Username: (Required*)<br>
+    Pleae enter your Username<br>
+    <input type = "text" username = "username" ><br><br>
     
-    <button class="btn btn-primary active" type="submit">Submit</button>
-    {{ form.csrf_token }} 
-</form>
+    Firstname: (Required*)<br>
+    Pleae enter your firstname<br>
+    <input type = "text" firstname = "firstname" ><br><br>
+    
+    Lastname: (Required*)<br>
+    Pleae enter your lastname<br>
+    <input type = "text" lastname = "lastname" ><br><br>
+    
+    
+    <label for="gender">Gender</label><br>
+        <select name="gender">
+             <option value="male">Male</option>
+             <option value="female">Female</option>
+        </select><br><br>
+    
+    
+    Age: (Required*)<br>
+    Pleae enter your age<br>
+    <input type = "text" age = "age" ><br><br>
+    
+            <p>Enter biography</p>
+            <textarea id="bio" name="bio"></textarea><br><br>
+    
+    
+            <p>Upload profile photo</p>
+            <input type ="file" id="pic" name="pic" accept="image/*"></input><br>
+            
+    
+    <input type="submit" name="submit" value="submit">
+    </form>
+
 {% endblock %}
