@@ -33,10 +33,10 @@
 h2{
     padding-left: 500px;
 }
-.button{
+.btn{
     float:left;
-    background-color: #085a65;
-    color:  #085a65;
+   
+    color:blue;
 }
 
 </style>
@@ -45,7 +45,7 @@ h2{
 <p><h4>Choose a Profile to view</strong></h4></p>
 <div>
         <form action="{{ url_for('profile_list') }}" method="POST" enctype="application/json">
-            <button type="submit">View JSON Output</button>
+            <button style="background-color:#66cdaa">Click for JSON Output</button>
         </form>
 </div>
 
@@ -67,9 +67,9 @@ h2{
             <p>Username: {{ profile.username }} <br/>
             User ID: {{ profile.userid }} <br/>
             Gender: {{ profile.gender }} <br/>
-            Age: {{ profile.age }} <br/>
+            Age: {{ profile.age }} <br/><br>
             
-            {{ profile.bio }}
+            Bio: {{ profile.bio }}
             </p>
             </div>
         </div>

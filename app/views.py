@@ -50,7 +50,7 @@ def add_profile():
         filename = secure_filename(pic.filename)
         pic.save(os.path.join(file_folder, filename))
             
-        date_created = time.strftime("%d %b %Y")
+        date_created = time.strftime("%d %B %Y")
         profile =  Profile(userid=userid, username=username, firstname=firstname, lastname=lastname, gender=gender, age=age, bio=bio, date_created=date_created, pic=pic.filename,)
         
     
@@ -82,15 +82,13 @@ def profile_list():
         return render_template('profiles.html',profiles=profiles)
 
     
-    
-    
 @app.route('/profile/<userid>', methods=['POST','GET'])
 def profile_view(userid):
     print userid
     profile = db.session.query(Profile).filter_by(userid=userid).first()
 
     if request.headers['Content-Type']=='application/json' or request.method == "POST":
-        return jsonify(userid=profile.userid, username=profile.username, pic=profile.pic, gender=profile.gender, age=profile.age, profile_created_on=profile.date_created)
+        return jsonify(userid=profile.userid, username=profile.username, pic=profile.pic, gender=profile.gender, age=profile.age, date_created=profile.date_created)
     else:
         return render_template('profile_view.html', profile=profile)
         
