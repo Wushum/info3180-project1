@@ -4,29 +4,65 @@
 
 
 {% block main %}
+<style>
+    #container{
+        width: 100%;
+        margin: 0 auto;
+        color:black;
+    }
+    
+    .name{
+        font-size: 20px;
+        float: top;
+        margin-right: 400px;
+        margin-bottom: 250px;
+        padding-left: 50px;
+        color:blue;
+        
+    }
+    
+    .pic{
+    height: auto; 
+    width: auto; 
+    float: left;
+    max-width: 500px; 
+    max-height: 500px;
+    margin-top:50px;
+    margin-right: 20px;
+}
+    
+</style>
+
+<h3>All Profiles</h3><br>
+<p><h4>Choose a Profile to view</strong></h4></p>
 <div>
 <form action="{{ url_for('profile_list') }}" method="POST" enctype="application/json">
-            
+            <button type="submit">View JSON</button>
         </form>
 </div>
 
 
 {% for profile in profiles %}
-<div>
+<div id="container">
 <a href="/profile/{{ profile.userid}}" method="POST">
+    
 
-<img src="{{ url_for('static', filename='uploads/'+profile.pic) }}">
+<div class = "image">
+<img class = "pic" src="{{ url_for('static', filename='uploads/'+profile.pic) }}"><br><br>
+</div>
 
-            <h4>{{profile.firstname}} {{ profile.lastname }}</h4><br/><br/>
-            Profile Created On: {{ profile.date_created }}<br/><br/>
+<div class = "name">
+            <h4>{{profile.firstname}} {{ profile.lastname }}</h4><br/>
+            Profile Created On: {{ profile.date_created }}<br/>
             
-            <p>Username: {{ profile.username }} <br/><br/>
-            User ID: {{ profile.userid }} <br/><br/>
-            Gender: {{ profile.gender }} <br/><br/>
-            Age: {{ profile.age }} <br/><br/>
+            <p>Username: {{ profile.username }} <br/>
+            User ID: {{ profile.userid }} <br/>
+            Gender: {{ profile.gender }} <br/>
+            Age: {{ profile.age }} <br/>
             
             {{ profile.bio }}
             </p>
+            </div>
         </div>
     
     

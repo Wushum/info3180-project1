@@ -1,24 +1,50 @@
 {% extends 'base.html'%}
 {% block title %} View user {% endblock %}
 {% block main%}
+<style>
+
+  .pic{
+    height: auto; 
+    width: auto; 
+    float: left;
+    max-width: 500px; 
+    max-height: 500px;
+    margin-top:50px;
+    margin-bottom:50px;
+}
+
+.name{
+        font-size: 20px;
+        float: right;
+        margin-right: 400px;
+        margin-bottom: 250px;
+        color:blue;
+    }
+    
+</style>
     
     <div>
    <form action="{{ url_for('profile_view',userid=profile.userid) }}" method="POST" enctype="application/json">
-            
+            <button type="submit">View JSON</button>
         </form>
         
-        </div<
+        </div
     <div>
-    <h4>{{ profile.firstname }}'s Profile</h4>
-    pic: {{profile.pic}}
+    <h2>{{ profile.firstname }}'s Profile</h2><br><br>
+    <!--Profile Picture: {{ profile.pic }}-->
+    <div class = "image">
+        <img class = "pic" src="{{ url_for('static', filename='uploads/'+profile.pic) }}"><br><br>
+    </div>
+    <div class = "name">
     <h3>{{ profile.firstname }} {{profile.lastname}}</h3> 
-    <h6>Date Created: {{profile.date_created}}</h6>
-    <p>Username: {{profile.username}}<br>
-    User ID: {{profile.id}}<br>
+    <p>Date Created: {{profile.date_created}}<br>
+    Username: {{profile.username}}<br>
+    User ID: {{profile.userid}}<br>
     Gender: {{profile.gender}}<br>
-    Age: {{profile.age}}<br><br>
+    Age: {{profile.age}}<br>
     {{profile.bio}}
     </p> 
     </div>
+    
     {% endblock%}
   

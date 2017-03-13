@@ -1,8 +1,8 @@
 {%extends "base.html"%}
 
- {%block main%}   
+{%block main%}   
  
-{%include 'flash.html'%}
+    {%include 'flash.html'%}
  
 <form action="{{ url_for('add_profile') }}" method="post"  enctype="multipart/form-data">   
 
@@ -10,15 +10,15 @@
     
     Username: (Required*)<br>
     Pleae enter your Username<br>
-    <input type = "text" username = "username" ><br><br>
+    <input type = "text" id="username" name = "username" ><br><br>
     
     Firstname: (Required*)<br>
     Pleae enter your firstname<br>
-    <input type = "text" firstname = "firstname" ><br><br>
+    <input type = "text" id="firstname" name = "firstname" ><br><br>
     
     Lastname: (Required*)<br>
     Pleae enter your lastname<br>
-    <input type = "text" lastname = "lastname" ><br><br>
+    <input type = "text" id="lastname" name = "lastname" ><br><br>
     
     
     <label for="gender">Gender</label><br>
@@ -30,7 +30,7 @@
     
     Age: (Required*)<br>
     Pleae enter your age<br>
-    <input type = "text" age = "age" ><br><br>
+    <input type = "number" id = "age" name = "age" ><br><br>
     
             <p>Enter biography</p>
             <textarea id="bio" name="bio"></textarea><br><br>

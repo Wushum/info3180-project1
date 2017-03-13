@@ -20,7 +20,7 @@ from random import randint
 # from wtforms.validators import Required
 
 
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+#ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 ###
 # Routing for your application.
@@ -37,35 +37,37 @@ def about():
     """Render the website's about page."""
     return render_template('about.html', name="Mary Jane")
     
-def timeinfo():
-    return time.strftime("%d %b %Y")
+# def timeinfo():
+#     return time.strftime("%d %b %Y")
 
 
 @app.route('/profile', methods=['POST','GET'])
 def add_profile():
     
+    
     if request.method == 'POST':
         userid = random.randint(10000, 20000)
+        username = request.form['username']
         firstname = request.form['firstname']
         lastname = request.form['lastname']
-        username = request.form['username']
         gender = request.form['gender']
         age = request.form['age']
         bio = request.form['bio']
+        
         pic = request.files['pic']
         
         file_folder = app.config["UPLOAD_FOLDER"]
         filename = secure_filename(pic.filename)
         pic.save(os.path.join(file_folder, filename))
             
-        date_created = timeinfo()
-        profile =  Profile(userid=userid,firstname=firstname, lastname=lastname, username=username, gender=gender, age=age, bio=bio, date_created=date_created, pic=pic.filename,)
+        date_created = time.strftime("%d %b %Y")
+        profile =  Profile(userid=userid, username=username, firstname=firstname, lastname=lastname, gender=gender, age=age, bio=bio, date_created=date_created, pic=pic.filename,)
         
     
         db.session.add(profile)
         db.session.commit()
             
-        flash ('Profile created', 'success')
+        
         return redirect(url_for('profile_list'))
     
     return render_template("profile.html")
@@ -94,14 +96,6 @@ def profile_list():
     
 @app.route('/profile/<userid>', methods=['POST','GET'])
 def profile_view(userid):
-    # user = db.session.query(Profile).filter(Profile.userid == str(userid)).first()
-    # if not user:
-    #     flash("user cannot be found", 'danger')
-    # else:
-    #     if request.header.get('Content-Type' == 'application/json') or request.method == 'POST':
-    #         return jsonify(userid=user.userid, username=user.username, gender=user.gender, age=user.age, pic=user.pic, date_created=user.date_created)
-    #     return render_template('profile.html', user=user)
-    # return redirect(url_for('profile_list'))
     print userid
     profile = db.session.query(Profile).filter_by(userid=userid).first()
 
@@ -109,7 +103,7 @@ def profile_view(userid):
         return jsonify(userid=profile.userid, username=profile.username, pic=profile.pic, gender=profile.gender, age=profile.age, profile_created_on=profile.date_created)
     else:
         return render_template('profile_view.html', profile=profile)
-    
+        
     
 ###
 # The functions below should be applicable to all Flask apps.
