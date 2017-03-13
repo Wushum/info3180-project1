@@ -21,12 +21,16 @@
         padding-left: 50px;
         color:blue;
     }
-    
+.button{
+    float:left;
+    top:50%;
+    color:  blue;
+}  
 </style>
     
     <div>
-   <form action="{{ url_for('profile_view',userid=profile.userid) }}" method="POST" enctype="application/json">
-            
+       <form action="{{ url_for('profile_view',userid=profile.userid) }}" method="POST" enctype="application/json">
+            <button type="submit">View JSON Output</button>
         </form>
         
         </div

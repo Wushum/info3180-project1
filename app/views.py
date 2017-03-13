@@ -10,9 +10,12 @@ from flask import render_template, request, redirect, url_for, flash, session, j
 from werkzeug.utils import secure_filename
 from flask_wtf import Form
 from app.models import Profile
+from forms import ProfileForm
 from random import randint
 
 
+
+UPLOAD_FOLDER = "./app/static/uploads"
 ###
 # Routing for your application.
 ###
@@ -28,11 +31,10 @@ def about():
     """Render the website's about page."""
     return render_template('about.html', name="Mary Jane")
 
-
 @app.route('/profile', methods=['POST','GET'])
 def add_profile():
     
-    
+    form = ProfileForm()
     if request.method == 'POST':
         userid = random.randint(10000, 20000)
         username = request.form['username']
@@ -56,7 +58,7 @@ def add_profile():
         db.session.commit()
             
         
-        return redirect(url_for('profile_list'))
+        return redirect(url_for('profile_list', form=form))
     
     return render_template("profile.html")
 

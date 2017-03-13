@@ -33,14 +33,19 @@
 h2{
     padding-left: 500px;
 }
-    
+.button{
+    float:left;
+    background-color: #085a65;
+    color:  #085a65;
+}
+
 </style>
 
 <h2>All Profiles</h2><br>
 <p><h4>Choose a Profile to view</strong></h4></p>
 <div>
-<form action="{{ url_for('profile_list') }}" method="POST" enctype="application/json">
-            
+        <form action="{{ url_for('profile_list') }}" method="POST" enctype="application/json">
+            <button type="submit">View JSON Output</button>
         </form>
 </div>
 
@@ -52,6 +57,7 @@ h2{
 
 <div class = "image">
 <img class = "pic" src="{{ url_for('static', filename='uploads/'+profile.pic) }}"><br><br>
+
 </div>
 
 <div class = "name">
