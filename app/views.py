@@ -5,22 +5,13 @@ Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
 import os, time, random
-from app import app, db #login_manager
+from app import app, db
 from flask import render_template, request, redirect, url_for, flash, session, jsonify
 from werkzeug.utils import secure_filename
 from flask_wtf import Form
-#from forms import ProfileForm
 from app.models import Profile
-#from datetime import datetime
 from random import randint
 
-
-# from flask.ext.wtf import Form
-# from wtforms.fields import TextField, BooleanField
-# from wtforms.validators import Required
-
-
-#ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 ###
 # Routing for your application.
@@ -36,9 +27,6 @@ def home():
 def about():
     """Render the website's about page."""
     return render_template('about.html', name="Mary Jane")
-    
-# def timeinfo():
-#     return time.strftime("%d %b %Y")
 
 
 @app.route('/profile', methods=['POST','GET'])

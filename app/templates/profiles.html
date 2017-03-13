@@ -14,7 +14,7 @@
     .name{
         font-size: 20px;
         float: top;
-        margin-right: 400px;
+        margin-right: 300px;
         margin-bottom: 250px;
         padding-left: 50px;
         color:blue;
@@ -28,16 +28,19 @@
     max-width: 500px; 
     max-height: 500px;
     margin-top:50px;
-    margin-right: 20px;
+    margin-right: 10px;
+}
+h2{
+    padding-left: 500px;
 }
     
 </style>
 
-<h3>All Profiles</h3><br>
+<h2>All Profiles</h2><br>
 <p><h4>Choose a Profile to view</strong></h4></p>
 <div>
 <form action="{{ url_for('profile_list') }}" method="POST" enctype="application/json">
-            <button type="submit">View JSON</button>
+            
         </form>
 </div>
 
